@@ -1,0 +1,84 @@
+Some things we can do to abuse this TCP Server is that we could have so many bots access this server that it creates so many goroutines that it ends up exhausting the memory and crashing the service
+
+To prevent this we could:
+  - Set connection limits
+  - Set Timeouts
+  - Set a Worker Pool
+
+We could also set a form of authentication to ensure that not just anyone can gain access to our TCP server
+
+Bufio Scanner has a max token size of 64KB
+
+In this server there is no encryption or privacy while data is in transit. So the data can be sniffed and picked
+
+
+#NS Lookup
+gets the os.arg[1] then calls net.lookupIP() which is this snippet of code from the net package
+
+```
+// LookupIP looks up host using the local resolver.
+// It returns a slice of that host's IPv4 and IPv6 addresses.
+func LookupIP(host string) ([]IP, error) {
+	addrs, err := DefaultResolver.LookupIPAddr(context.Background(), host)
+	if err != nil {
+		return nil, err
+	}
+	ips := make([]IP, len(addrs))
+	for i, ia := range addrs {
+		ips[i] = ia.IP
+	}
+	return ips, nil
+}
+```
+
+
+HTTP Requests
+
+```
+<METHOD>  <PATH>  <PROTOCOL/VERSION>
+Host: <HOST>
+[<HEADER>: <VALUE>]
+[<HEADER>: <VALUE>]
+[<HEADER>: <VALUE>] (these guys are optional)
+
+[<REQUEST BODY>] (this is also optional).
+```
+
+BASIC REQUEST
+
+```
+GET /backendbasics.html HTTP/1.1
+Host: <URL>
+```
+
+Using METHOD, PATH, PROTOCOL
+
+This Request is then followed by HEADERS
+
+eg. 
+Host: <URL>
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US, en;q=0.9
+Cache-Control: no-cache
+User-Agent: Mozilla/5.0 (Linux; Android 8.0.0)
+
+URL-Encoding: Urls cannot contain characters such as spaces and tabs as they are used to separate sections so instead you have to give the characters hex forms prefixed by % so for space it wouold be 0x20 -> %20, and percent would be 0x25 -> %25
+
+for example
+
+```
+GET /backend%20basics.html HTTP/1.1
+Host: <URL>
+```
+
+GET /search?q=ice&order=released&dir=asc HTTP/1.1
+
+for the httpReq.exe run it as such
+
+(assuming it is running on port 8080)
+./sendreq -host <URL> -port 8080
+
+HTTP Responses
+
+STATUS LINE has PROTOCOL/VERSION, STATUS CODE, response body
+
